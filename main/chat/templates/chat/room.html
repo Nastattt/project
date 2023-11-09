@@ -1,0 +1,66 @@
+
+<div id="chat-log" style="max-height: 300px; overflow-y: auto;"></div><br>
+<input id="chat-message-input" type="text" size="100" placeholder="Enter your message here...">
+<br>
+<input id="chat-message-submit" type="button" value="Send">
+
+{{ room_name|json_script:"room-name" }}
+{{ current_time|json_script:"currentTime" }}
+
+<script>
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
+    const currentTime = JSON.parse(document.getElementById('currentTime').textContent);
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + roomName
+        + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const message = data.message;
+        const time = data.time;
+
+        if (time !== undefined) {
+            const messageWithTime = `${message} (${time})`;
+            document.querySelector('#chat-log').innerHTML += (messageWithTime + '<br>');
+        } else {
+            const messageWithoutTime = `${message}`;
+            document.querySelector('#chat-log').innerHTML += (messageWithoutTime + '<br>');
+        }
+    };
+
+    // Обработчик события для поля ввода
+    document.querySelector('#chat-message-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+
+            if (message.trim() !== '') {
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'time': currentTime
+                }));
+                messageInputDom.value = '';
+            }
+        }
+    });
+
+    // Обработчик события для кнопки отправки
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+
+        if (message.trim() !== '') {
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'time': currentTime
+            }));
+            messageInputDom.value = '';
+        }
+    };
+</script>
+
