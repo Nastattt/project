@@ -1,0 +1,24 @@
+<!-- auth/confirm_code.html -->
+
+<body>
+    <h1>Confirm Code</h1>
+    <p>Код подтверждения отправлен на почту {{ email }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.code.label_tag }}
+        {{ form.code }}
+
+        <button type="submit" class="btn btn-primary">Продолжить</button>
+        <a href="{% url 'room' room_name='some_room_name' %}">Назад</a>
+        <button type="button" id="resend-code">Не пришло SMS</button>
+    </form>
+
+    <script>
+        document.getElementById('resend-code').addEventListener('click', function() {
+            // Логика для отправки повторного кода на почту
+            // ...
+        });
+    </script>
+</body>
+

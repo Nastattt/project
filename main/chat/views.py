@@ -3,7 +3,6 @@ import datetime
 # а  redirect  - для перенаправления на другую страницу.
 
 
-
 def index(request):
     if not request.user.is_authenticated:
         return redirect('login')

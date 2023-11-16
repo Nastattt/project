@@ -17,5 +17,5 @@ urlpatterns = [
     # Django будет включать URL-конфигурацию из модуля  chat.urls  для обработки запроса.
     # Это позволяет определить дополнительные URL-шаблоны для функциональности чата.
     path("chat/", include("chat.urls")),
-    path("", include("users.urls")),
+    path("user/", include("users.urls")),
 ]
